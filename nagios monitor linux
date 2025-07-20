@@ -107,7 +107,8 @@ define service {
     use                     generic-service
     host_name               deb-12-1
     service_description     SSH Service
-    check_command           check_tc
+    check_command           check_ssh
+}
 define service {
     use                     generic-service
     host_name               deb-12-1
