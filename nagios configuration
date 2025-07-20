@@ -1,0 +1,76 @@
+
+	prerequsites for nagios installation 
+	
+	1. configure hostname 
+	2. configure static ip 
+	3. configure apt 
+	4. install sudo 
+	5. set time zone  ---->  sudo dpkg-reconfigure tzdata
+								asia and kolkata
+								
+	 - sudo apt-get install apache2 apache2-utils autoconf  gcc libc6 libgd-dev make php python3 tree unzip wget libkrb5-dev   openssl libssl-dev
+	 
+	 exaract the  nagios-4.5.0.tar.gz 
+			extract in /tmp folder   --> tar -zxf nagios-4.5.0.tar.gz
+			
+	
+	 --> sudo ./configure --with-httpd-conf=/etc/apache2/sites-enabled
+      -  ls -l 
+	  
+	 - sudo make all  --> it compiles the source code to binary 
+	 
+	 - sudo make install-groups-users  ---> creating nagios group and users
+	 
+	 - sudo usemod -a -G nagios www-data   ---> adding www-data to nagios group 
+	 
+	 
+	
+	# installing nagios from here
+	
+	 -sudo make install 
+	 
+	 - sudo make install-daemonint   ---> starting initialixing services
+	 
+	 - sudo make install-commandmode
+	 
+	 - sudo make install-config    --> for installing configuration file of /etc/apache
+	 
+	 - ls -l
+	 
+	 - sudo make install-webconf   --> for running nagios in the sites-enabled
+	 
+	 - sudo a2enmod cgi
+	 
+	 - sudo a2enmod rewrite
+	 
+	 # giving permision  who want to access the nagios
+	
+	-  sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+	
+	-  sudo /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+	      # it is for verifying the nagios config file 
+		  
+	- sudo systemctl restart nagios
+      sudo systemctl restart apache2
+	  
+	  
+	  
+	  ########## to install the nagios plugin ##############
+	  
+	  prerequisites to  install plugins :
+
+	-  sudo apt-get install -y automake autotools-dev bc build-essential dc gawk gettext libmcrypt-dev libnet-snmp-perl libssl-dev snmp
+
+	extract the tar file in /tmp 
+		nagios-plugins-2.4.8.tar.gz
+	 
+	 check the libexec files are present are not 
+	 
+	 sudo ./configure 
+	 
+	 sudo make 
+	 
+	 sudo make install
+
+	 
+	 - 
