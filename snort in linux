@@ -1,0 +1,140 @@
+
+	SNORT USING LINUX :-
+		
+	packages:-
+		1.snort-2.9.tar.gz
+		2. daq-2.0.7.tar.gz 
+
+===============================================================================
+
+	- sudo apt-get install -y bison ca-certificates flex gcc libdumbnet-dev \
+libluajit-5.1-dev libnghttp2-dev libpcap-dev libpcre3-dev libssl-dev \
+make openssl wget zlib1g-dev
+
+
+	##install the DAQ library###
+	
+	mkdir -p /usr/src/snort_src  -> make dir of snort_src
+	
+	- extract the tar file of daq-2.0.7.tar.gz   in /tmp
+	
+	-sudo ./configure
+	
+	- sudo make 
+	
+	- sudo make install 
+	
+	#### download the snort-2.9.tar.gz
+	
+		- in /usr/src/snort_src   ->>. extract the tar file in this folder
+		
+		
+	sudo ln -s /usr/include/tirpc/netconfig.h /usr/include/ 
+	sudo ln -s /usr/include/tirpc/rpc/rpc.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/types.h /usr/include/rpc 
+	sudo ln -s /usr/include/tirpc/rpc/xdr.h /usr/include/rpc 
+	sudo ln -s /usr/include/tirpc/rpc/auth.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/clnt_stat.h /usr/include/rpc 
+	sudo ln -s /usr/include/tirpc/rpc/clnt.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc     
+	sudo ln -s /usr/include/tirpc/rpc/rpc_msg.h /usr/include/rpc     
+	sudo ln -s /usr/include/tirpc/rpc/auth_unix.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/auth_des.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/svc_auth.h /usr/include/rpc 
+	sudo ln -s /usr/include/tirpc/rpc/svc.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/svc_soc.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/pmap_clnt.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/pmap_prot.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/rpcb_clnt.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/rpcb_prot.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/svc_mt.h /usr/include/rpc
+	sudo ln -s /usr/include/tirpc/rpc/rpcent.h /usr/include/rpc
+	
+	cd /usr/src/snort/snort_src/snort-2.9.20 
+		- sudo ./configure
+		- sudo make 
+		- sudo make install
+		
+	- sudo ldconfig -p  | grep tirpc
+	
+	- sudo ldconfig -V  -> version
+	
+	- sudo snort -i ens33 
+			sudo updatedb
+  			 locate libsfbpf.so.0
+   			 echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/snort.co
+	
+	 		sudo ldconfig
+
+			sudo apt-get update
+                        sudo apt-get install libc-bin
+			 
+
+	
+	- sudo groupadd snort
+	
+	-  sudo useradd snort -r -s /usr/sbin/nologin -c SNORT_IDS -g snort
+	
+	-  sudo mkdir -p /etc/snort/rules
+	-  sudo mkdir /usr/local/lib/snort_dynamicrules
+	-  sudo cp /usr/src/snort_src/snort-2.9.20/etc/*.conf* /etc/snort/
+	- sudo cp /usr/src/snort_src/snort-2.9.20/etc/*.map /etc/snort/
+	
+	
+	 sudo touch /etc/snort/rules/white_list.rules
+     sudo touch /etc/snort/rules/black_list.rules
+     sudo touch /etc/snort/rules/local.rules
+     sudo chmod -R 5775 /etc/snort/
+     sudo chmod -R 5775 /var/log/snort
+     sudo chmod -R 5775 /usr/local/lib/snort_dynamicrules
+     sudo chown -R snort:snort /etc/snort/
+     sudo chown -R snort:snort /usr/local/lib/snort_dynamicrules
+	 
+	 - sudo nano -l /etc/snort/snort.conf   -> line number 104
+		
+		 var RULE_PATH /etc/snort/rules
+		  var SO_RULE_PATH /etc/snort/so_rules
+		  var PREPROC_RULE_PATH /etc/snort/preproc_rules
+
+		
+		var WHITE_LIST_PATH /etc/snort/rules   line no--> 113
+		var BLACK_LIST_PATH /etc/snort/rules   
+
+	
+	Step #7: Customize your rule set
+	
+	delete the all the rules except the three rules 
+	
+		 include $RULE_PATH/local.rules       line no-->534
+		 include $RULE_PATH/white_list.rules
+		 include $RULE_PATH/black_list.rules
+
+	- sudo snort -T -c /etc/snort/snort.conf      ---->testing the snort
+	
+	### running the  snort
+	- sudo snort -i ens33 -u snort -g snort -c /etc/snort/snort.conf -A  console -->  u can use -T FOR TES
+ 
+	
+	## if error occurs##
+	
+		ERROR: log_tcpdump: Failed to open log file 
+		"/var/log/snort/snort.log.1751103067": Permission denied
+	
+		sudo mkdir -p /var/log/snort
+		
+		sudo chown -R snort:snort /var/log/snort       
+
+		- sudo snort -i ens33 -u snort -g snort -c /etc/snort/snort.conf -A  console
+
+		          sucessfully run the snort 
+	
+		- etc/snort/rules/local.rules   ----> create a rule in rules files
+
+			
+			alert icmp any any -> any any (msg:"ICMP Ping Detected"; sid:1000001; rev:1;)
+
+
+	###############check form the client#######
+	
+		- sudo tcpdump -i ens33 -c 2
+		- sudo snort -i  ens33
