@@ -1,0 +1,81 @@
+
+
+
+requrements: -
+
+	exclude the ---> snort folder in c:\
+	exclude the --> folder where u storing tar fie 
+
+getmac /fo csv /v  ----> find interfaces 
+
+snort -i 1    ----> capturing the traffic 
+
+snort -W
+
+
+snort -i 1 -c C:\Snort\etc\snort.conf -l C:\Snort\log -A console
+
+
+in cmd 
+	dir /b 
+
+
+dynamicpreprocessor C:\Snort\lib\snort_dynamicpreprocessor\sf_dce2.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_dnp3.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_dns.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_ftptelnet.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_gtp.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_imap.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_modbus.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_pop.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_reputation.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_sdf.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_sip.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_smtp.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_ssh.dll
+dynamicpreprocessor  C:\Snort\lib\snort_dynamicpreprocessor\sf_ssl.dll
+
+
+
+
+
+# path to base preprocessor engine
+dynamicengine C:\Snort\lib\snort_dynamicengine\sf_engine.dll
+
+
+# path to dynamic rules libraries
+dynamicdetection directory C:\Snort\lib\snort_dynamicrules
+
+
+
+
+create a white_list.rules and black_list.rules -----> in rules file 
+
+
+# Reputation preprocessor. For more information see README.reputation
+preprocessor reputation: \
+   memcap 500, \
+   priority whitelist, \
+   nested_ip inner, \
+   whitelist $WHITE_LIST_PATH/white_list.rules, \
+   blacklist $BLACK_LIST_PATH/black_list.rules 
+
+
+
+var RULE_PATH  C:\Snort\rules
+var SO_RULE_PATH  C:\Snort\rules\so_rules
+var PREPROC_RULE_PATH C:\Snort\rules\preproc_rules
+
+
+var WHITE_LIST_PATH  C:\Snort\rules
+var BLACK_LIST_PATH  C:\Snort\rules
+
+
+create a myrule.rules in rule /etc/snort/rules        -- > write something in that file 
+
+	# site specific rules
+	include $RULE_PATH/myrule.rules
+	
+	
+snort -i 1 -c C:\Snort\etc\snort.conf -l C:\Snort\log -A console
+
