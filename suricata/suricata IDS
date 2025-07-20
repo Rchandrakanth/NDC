@@ -1,0 +1,72 @@
+	
+deb1===suricata
+deb2= client
+
+=========================================
+	- sudo apt-get install suricata
+
+	- sudo nano -l  /etc/suricata/suricata.yaml
+
+	1. af-packet:
+ 	  - interface: ens36   --> interface name
+	
+	2.rule-files:
+  		- suricata.rules
+   		- local.rules      --> add this one
+
+	- sudo nano /etc/suricata/rules/local.rules
+
+		- alert icmp any any -> any any (msg:"Ping detected"; sid:1000001; rev:1;)
+
+
+ 	- sudo systemctl restart suricata
+
+       -   sudo tail -f /var/log/suricata/fast.log
+
+
+client:-
+	- do ping to suricata server
+
+
+
+
+==============================================
+
+	suricata using ips mode 
+
+ 	-suricata --build-info | grep NFQueue
+	
+	- sudo nano /etc/suricata/suricata.yaml
+	
+	- search nfq
+
+	uncomment this 
+			
+		nfq:
+  			mode: accept
+  			repeat-mark: 1
+  			repeat-mask: 1
+  			route-queue: 2
+
+	- sudo apt install iptables -y
+
+	-  sudo iptables -I INPUT -p icmp -j NFQUEUE --queue-num 2
+
+ 	-  sudo iptables -I OUTPUT -p icmp -j NFQUEUE --queue-num 2
+
+	-  sudo nano /etc/suricata/rules/local.rules    --- > open file
+
+		- drop  icmp any any -> any any (msg:"Ping detected"; sid:1000002; rev:1;)
+
+		-  sudo systemctl stop suricata
+
+		-  sudo systemctl status suricata
+
+		- sudo tail -f /var/log/suricata/fast.log
+
+
+
+  client: --
+		ping to the suricata machine (it will not ping)   -> successfully completed
+
+
