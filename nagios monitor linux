@@ -73,13 +73,13 @@ define service{
 
 
 ================services file =============
-
+/usr/local/nagios/etc/servers$ sudo nano deb-12.cfg
 
 define host {
     use                     linux-server
     host_name               deb-12-1
     alias                   debian 12 sys1
-    address                 192.168.80.135
+    address                 192.168.80.134
     max_check_attempts      5
 }
 
@@ -87,14 +87,14 @@ define service {
     use                     generic-service
     host_name               deb-12-1
     service_description     Virtual Memory Usage
-    check_command           check_ncpa!-t 'password1234' -P 5693 -M memory/virtual -w 50 -c 80
+    check_command           check_ncpa!-t 'password1234' -p  -P 5693 -M memory/virtual -w 50 -c 80
 }
 
 define service {
     use                     generic-service
     host_name               deb-12-1
     service_description     Process Count
-    check_command           check_ncpa!-t 'password1234' -P 5693 -M processes -w 50 -c 80
+    check_command           check_ncpa!-t 'password1234' -p  -P 5693 -M processes -w 50 -c 80
 }
 
 define service {
@@ -112,29 +112,32 @@ define service {
 define service {
     use                     generic-service
     host_name               deb-12-1
-    service_description     HTTP Service
-    check_command           check_http
-}
-define service {
-    use                     generic-service
-    host_name               deb-12-1
     service_description     Swap Usage
-    check_command           check_ncpa!-t 'password1234' -P 5693 -M memory/swap -w 70 -c 90
+    check_command           check_ncpa!-t 'password1234' -p -P 5693 -M memory/swap -w 70 -c 90
 }
+
 define service {
     use                     generic-service
     host_name               deb-12-1
     service_description     Total Processes
-    check_command           check_ncpa!-t 'password1234' -P 5693 -M processes -w 150 -c 300
+    check_command           check_ncpa!-t 'password1234' -p  -P 5693 -M processes -w 150 -c 300
 }
+
 define service {
     use                     generic-service
     host_name               deb-12-1
     service_description     Load Average
-    check_command           check_ncpa!-t 'password1234' -P 5693 -M system/load/1 -q "type=1" -w 2 -c 4
+    check_command           check_ncpa!-t 'password1234' -p  -P 5693 -M system/loadavg -q value=1 -w 2 -c 4
 }
 
 
 
+==========================================
 
-
+optional:-
+		define service {
+		    use                     generic-service
+		    host_name               deb-12-1
+		    service_description     HTTP Service
+		    check_command           check_http
+		}
